@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/react-xstate-appointment/static/css/main.26955afe.chunk.css",
-    "main.js": "/react-xstate-appointment/static/js/main.4ab9067a.chunk.js",
-    "main.js.map": "/react-xstate-appointment/static/js/main.4ab9067a.chunk.js.map",
+    "main.js": "/react-xstate-appointment/static/js/main.60d97793.chunk.js",
+    "main.js.map": "/react-xstate-appointment/static/js/main.60d97793.chunk.js.map",
     "runtime-main.js": "/react-xstate-appointment/static/js/runtime-main.09797f37.js",
     "runtime-main.js.map": "/react-xstate-appointment/static/js/runtime-main.09797f37.js.map",
     "static/js/2.a3ede205.chunk.js": "/react-xstate-appointment/static/js/2.a3ede205.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.09797f37.js",
     "static/js/2.a3ede205.chunk.js",
     "static/css/main.26955afe.chunk.css",
-    "static/js/main.4ab9067a.chunk.js"
+    "static/js/main.60d97793.chunk.js"
   ]
 }
