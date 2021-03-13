@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/krisfarr21/react-xstate-appointment/static/css/main.26955afe.chunk.css",
+    "main.js": "/krisfarr21/react-xstate-appointment/static/js/main.04c03f44.chunk.js",
+    "main.js.map": "/krisfarr21/react-xstate-appointment/static/js/main.04c03f44.chunk.js.map",
+    "runtime-main.js": "/krisfarr21/react-xstate-appointment/static/js/runtime-main.cf70b40b.js",
+    "runtime-main.js.map": "/krisfarr21/react-xstate-appointment/static/js/runtime-main.cf70b40b.js.map",
+    "static/js/2.828adcde.chunk.js": "/krisfarr21/react-xstate-appointment/static/js/2.828adcde.chunk.js",
+    "static/js/2.828adcde.chunk.js.map": "/krisfarr21/react-xstate-appointment/static/js/2.828adcde.chunk.js.map",
+    "index.html": "/krisfarr21/react-xstate-appointment/index.html",
+    "static/css/main.26955afe.chunk.css.map": "/krisfarr21/react-xstate-appointment/static/css/main.26955afe.chunk.css.map",
+    "static/js/2.828adcde.chunk.js.LICENSE.txt": "/krisfarr21/react-xstate-appointment/static/js/2.828adcde.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cf70b40b.js",
+    "static/js/2.828adcde.chunk.js",
+    "static/css/main.26955afe.chunk.css",
+    "static/js/main.04c03f44.chunk.js"
+  ]
+}
