@@ -4,7 +4,7 @@ import * as ReactDOM from "react-dom";
 import { Machine, assign, send, State } from "xstate";
 import { useMachine, asEffect } from "@xstate/react";
 import { inspect } from "@xstate/inspect";
-import { dmMachine } from "./dmAppointment";
+import { dmMachine } from "./dmAppointment1";
 
 
 inspect({
@@ -117,7 +117,7 @@ function App() {
         },
     });
     const { listen, listening, stop } = useSpeechRecognition({
-        onResult: (result: any) => {
+        onResult: (result: string) => {
             send({ type: "ASRRESULT", value: result });
         },
     });

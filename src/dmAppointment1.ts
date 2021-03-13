@@ -15,20 +15,6 @@ function listen(): Action<SDSContext, SDSEvent> {
     return send('LISTEN')
 }
 
-function promptAndAsk(prompt: string): MachineConfig<SDSContext, any, SDSEvent> {
-    return ({
-        initial: 'prompt',
-        states: {
-            prompt: {
-                entry: say(prompt),
-                on: { ENDSPEECH: 'ask' }
-            },
-            ask: {
-                entry: send('LISTEN')
-            },
-        }})
-}
-
 const grammar: { [index: string]: { person?: string, day?: string, time?: string } } = {
     "John": { person: "John Appleseed" },
     "Chris": {person: "Chris Swan"},
@@ -41,30 +27,44 @@ const grammar: { [index: string]: { person?: string, day?: string, time?: string
     "on Thursday": {day: "Thursday"},
     "on Friday": { day: "Friday" },
 
-    "at two": {time: "2:00"},
-    "at three": {time: "3:00"},
-    "at four": {time: "4:00"},
-    "at five": {time: "5:00"},
-    "at six": {time: "6:00"},
-    "at seven": {time: "7:00"},
-    "at eight": {time: "8:00"},
-    "at nine": {time: "9:00"},
-    "at ten": { time: "10:00" },
+    "at 2": { time: "2:00" },
+	"at 3": { time: "3:00" },
+    "at 4": { time: "4:00" },
+    "at 5": { time: "5:00" },
+	"at 6": { time: "6:00" },
+    "at 7": { time: "7:00" },
+    "at 8": { time: "8:00" },
+    "at 9": { time: "9:00" },
+    "at 10": { time: "10:00" },
+    "at 11": { time: "11:00" },
+    "at 12": { time: "12:00" }
 
 }
 
-const yes_grammar: {[index: string]: boolean} = {
-    "yes": true,
-    "sure" : true,
-    "certainly": true,
-    "of course": true,
+const grammar2: { [index: string]: boolean } = {
     "yes of course": true,
+    "sure": true,
+    "absolutely": true,
+    "yes": true,
+    "no way": false,
+    "no": false
 }
 
-const no_grammar: {[index: string]: boolean} = {
-    "no": false,
-    "no way!": false,
-    "absolutely not" : false
+let a = grammar2["yes"]
+let b = grammar2["no"]
+
+function promptAndAsk(prompt: string): MachineConfig<SDSContext, any, SDSEvent> {
+    return ({
+        initial: 'prompt',
+        states: {
+            prompt: {
+                entry: say(prompt),
+                on: { ENDSPEECH: 'ask' }
+            },
+            ask: {
+                entry: send('LISTEN')
+            },
+        }})
 }
 
 export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
@@ -85,14 +85,14 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                     actions: assign((context) => { return { option: context.recResult } }),
                 }    
             }, // Change prompt and ask!
-                    ...promptAndAsk("Hello, welcome! Your options are to set an appointment, to do item or to set timer.")
+                    ...promptAndAsk("Hello")
         },
 
 
         query: {
             invoke: {
                 id: 'rasa',
-                src: (context, event) => nluRequest(context.recResult),
+                src: (context, event) => nluRequest(context.option),
                 onDone: {
                     target: 'menu',
                     actions: [assign((context, event) => { return  {option: event.data.intent.name} }),
@@ -110,9 +110,9 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
             initial: "prompt",
             on: {
                 ENDSPEECH: [
-                    { target: 'todo', cond: (context) => context.option === 'todo' },
-                    { target: 'timer', cond: (context) => context.option === 'timer' },
-                    { target: 'appointment', cond: (context) => context.option === 'appointment' }
+                    { target: 'todo', cond: (context) => context.recResult === 'todo' },
+                    { target: 'timer', cond: (context) => context.recResult === 'timer' },
+                    { target: 'appointment', cond: (context) => context.recResult === 'appointment' }
                 ]
             },
             states: {
@@ -170,7 +170,7 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
             initial: "prompt",
             on: {
                 RECOGNISED: [{
-					cond: (context) => "person" in (grammar[context.recResult] || null),
+					cond: (context) => "person" in (grammar[context.recResult] || {}),
                     actions: assign((context) => { return { person: grammar[context.recResult].person } }),
                     target: "day"
 
@@ -195,7 +195,7 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
             initial: "prompt",
             on: {
                 RECOGNISED: [{
-                    cond: (context) => "day" in (grammar[context.recResult] || null),
+                    cond: (context) => "day" in (grammar[context.recResult] || {}),
                     actions: assign((context) => { return { day: grammar[context.recResult].day } }),
                     target: "wholeday"
                 },
@@ -221,10 +221,10 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
         wholeday: {
             initial: "prompt",
             on: {
-                RECOGNISED: [{cond: (context) => (context.recResult in no_grammar),
+                RECOGNISED: [{cond: (context) => (grammar2[context.recResult] === b),
                     target: "time"
                 },
-		{cond: (context) => (context.recResult in yes_grammar),
+		{cond: (context) => (grammar2[context.recResult] === a),
 		target: "confirm_meeting_whole_day"
 		},
                 { target: ".nomatch" }]
@@ -249,23 +249,23 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
         time: {
             initial: "prompt",
             on: {
-                RECOGNISED: [{
-                    cond: (context) => "time" in (grammar[context.recResult] || null),
-                    actions: assign((context) => { return { time: grammar[context.recResult].time } }),
-                    target: "confirm_time"
+            RECOGNISED: [{
+                cond: (context) => "time" in (grammar[context.recResult] || {}),
+                actions: assign((context) => { return { time: grammar[context.recResult].time } }),
+                target: "confirm_time"
 
-                },
-                { target: ".nomatch" }]
             },
-            states: {
-                prompt: {
-                    entry: send((context) => ({
-                        type: "SPEAK",
-                        value: `OK. ${context.day}. What time is your meeting?`,
-                    
-                    })),
-            on: { ENDSPEECH: "ask" }
-                },
+            { target: ".nomatch" }]
+        },
+        states: {
+            prompt: {
+                entry: send((context) => ({
+                    type: "SPEAK",
+                    value: `OK. ${context.day}. What time is your meeting?`,
+                
+                })),
+        on: { ENDSPEECH: "ask" }
+            },
         ask: {
             entry: listen()
                 },
@@ -278,10 +278,10 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
         confirm_meeting_whole_day: {
             initial: "prompt",
             on: {
-                RECOGNISED: [{cond: (context) => (context.recResult in no_grammar),
+                RECOGNISED: [{cond: (context) => (grammar2[context.recResult] === b),
                     target: "init"
                 },
-		{cond: (context) => (context.recResult in yes_grammar),
+		{cond: (context) => (grammar2[context.recResult] === a),
 		target: "confirmed"
 		},
                 { target: ".nomatch" }]
@@ -308,10 +308,10 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
     confirm_time: {
         initial: "prompt",
         on:  {
-            RECOGNISED: [{cond: (context) => (context.recResult in no_grammar),
+            RECOGNISED: [{cond: (context) => (grammar2[context.recResult] === b),
                 target: "who"
             },
-    {cond: (context) => (context.recResult in yes_grammar),
+    {cond: (context) => (grammar2[context.recResult] === a),
     target: "confirmed"
     },
             { target: ".nomatch" }]
@@ -330,7 +330,7 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
     nomatch: {
         entry: say("Sorry, I don't understand"),
     on: { ENDSPEECH: "prompt" }
-           }
+           } 
             },
         },
     confirmed: {
@@ -347,15 +347,12 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
     }
     }})
 
-
-    
-
 // RASI API!
 
-const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-const rasaUrl = 'https://appointment.model.herokuapp.com/model/parse'
+const proxyurl = "https://cors-anywhere.herokuapp.com/";
+const rasaurl = 'https://appointment-model.herokuapp.com/model/parse'
 const nluRequest = (text: string) =>
-    fetch(new Request(proxyUrl + rasaUrl, {
+    fetch(new Request(proxyurl + rasaurl, {
         method: 'POST',
         headers: { 'Origin': 'http://localhost:3000/react-xstate-appointmentt' }, // with proxy
         body: `{"text": "${text}"}`
