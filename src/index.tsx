@@ -167,7 +167,7 @@ function App() {
 /* RASA API
  *  */
 const proxyurl = "https://cors-anywhere.herokuapp.com/";
-const rasaurl = 'https://krisfarr21.herokuapp.com/model/parse'
+const rasaurl = 'https://appointment-model.herokuapp.com/model/parse'
 const nluRequest = (text: string) =>
     fetch(new Request(proxyurl + rasaurl, {
         method: 'POST',

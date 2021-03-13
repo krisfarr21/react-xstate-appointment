@@ -85,7 +85,7 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                     actions: assign((context) => { return { option: context.recResult } }),
                 }    
             }, // Change prompt and ask!
-                    ...promptAndAsk("Hello")
+                    ...promptAndAsk("Hello! Your options are the following: To create an appointment, to set timer or to create a to-do item!")
         },
 
 
@@ -112,7 +112,8 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                 ENDSPEECH: [
                     { target: 'todo', cond: (context) => context.recResult === 'todo' },
                     { target: 'timer', cond: (context) => context.recResult === 'timer' },
-                    { target: 'appointment', cond: (context) => context.recResult === 'appointment' }
+                    { target: 'appointment', cond: (context) => context.recResult === 'appointment' },
+                    { target: 'nomatch'}
                 ]
             },
             states: {
@@ -122,10 +123,10 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                         value: `OK. I understand.`
                     })),
         },
-     /*            nomatch: {
+                nomatch: {
                     entry: say("Sorry, I don't understand"),
-                    on: { ENDSPEECH: "prompt" }
-        } */ 
+                    on: { ENDSPEECH: "menu" }
+        } 
             }       
         },
 
