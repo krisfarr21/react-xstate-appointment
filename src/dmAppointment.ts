@@ -113,7 +113,7 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                     { target: 'todo', cond: (context) => context.recResult === 'todo' },
                     { target: 'timer', cond: (context) => context.recResult === 'timer' },
                     { target: 'appointment', cond: (context) => context.recResult === 'appointment' },
-                    { target: 'nomatch'}
+                    // { target: 'nomatch'}
                 ]
             },
             states: {
@@ -123,10 +123,10 @@ export const dmMachine: MachineConfig<SDSContext, any, SDSEvent> = ({
                         value: `OK. I understand.`
                     })),
         },
-                nomatch: {
+     /*            nomatch: {
                     entry: say("Sorry, I don't understand"),
-                    on: { ENDSPEECH: "menu" }
-        } 
+                    on: { ENDSPEECH: "prompt" }
+        } */ 
             }       
         },
 

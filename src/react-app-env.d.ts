@@ -3,7 +3,6 @@
 declare module 'react-speech-kit';
 
 interface SDSContext {
-    // option(option: any): import("xstate").StateMachine<any, any, any, { value: any; context: any; }> | import("xstate").Subscribable<any> | import("xstate").InvokeCallback | PromiseLike<any>;
     recResult: string;
     nluData: any;
     ttsAgenda: string;
@@ -12,6 +11,10 @@ interface SDSContext {
     time: string;
     query: string;
     option: string;
+    context: string;
+    command: string;
+    action: string;
+    object: string;
 }
 
 type SDSEvent =
